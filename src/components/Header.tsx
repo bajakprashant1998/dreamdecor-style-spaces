@@ -6,6 +6,7 @@ import logo from "@/assets/logo.webp";
 
 const navLinks = [
   { name: "Home", path: "/" },
+  { name: "Turnkey Projects", path: "/turnkey-projects" },
   { name: "Shop", path: "/shop" },
   { name: "About Us", path: "/about" },
   { name: "Contact", path: "/contact" },
@@ -55,11 +56,10 @@ export default function Header() {
 
       {/* Main header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          isScrolled
+        className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
             ? "bg-background/95 backdrop-blur-md shadow-md"
             : "bg-background"
-        }`}
+          }`}
       >
         <div className="container flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
