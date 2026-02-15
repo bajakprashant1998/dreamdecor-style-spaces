@@ -4,19 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const materials = {
     wood: [
-        { name: "Teak Wood", img: "https://images.unsplash.com/photo-1543013862-2313620f4f9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-        { name: "Oak Veneer", img: "https://images.unsplash.com/photo-1517549649033-66f81e6e9692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-        { name: "Walnut Finish", img: "https://images.unsplash.com/photo-1621262973809-9407137f61ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Teak Wood", img: "https://images.unsplash.com/photo-1571205086863-9d186c5cb8fb?auto=format&fit=crop&w=800&q=80" },
+        { name: "Oak Veneer", img: "https://images.unsplash.com/photo-1616340877738-af1d98860f1e?auto=format&fit=crop&w=800&q=80" },
+        { name: "Walnut Finish", img: "https://images.unsplash.com/photo-1533673614069-40678174ded4?auto=format&fit=crop&w=800&q=80" },
     ],
     fabric: [
-        { name: "Velvet", img: "https://images.unsplash.com/photo-1617260555981-5d9c02d7e00e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-        { name: "Linen", img: "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Velvet", img: "https://images.unsplash.com/photo-1628973116165-8b91e31b5984?auto=format&fit=crop&w=800&q=80" },
+        { name: "Linen", img: "https://images.unsplash.com/photo-1686806372892-6a18b402bcef?auto=format&fit=crop&w=800&q=80" },
         { name: "Leather", img: "https://images.unsplash.com/photo-1550254478-ead40cc54513?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
     ],
     hardware: [
         { name: "Hettich", img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
         { name: "Hafele", img: "https://images.unsplash.com/photo-1565183928294-7063f23ce0f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-        { name: "Blum", img: "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+        { name: "Blum", img: "https://images.unsplash.com/photo-1585421892608-54b32a402283?auto=format&fit=crop&w=800&q=80" }
     ]
 };
 
