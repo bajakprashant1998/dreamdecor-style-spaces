@@ -13,11 +13,10 @@ const PROPERTY_TYPES = [
 ];
 
 const LOCATIONS = [
-    { value: "mumbai", label: "Mumbai", factor: 1.2 },
-    { value: "delhi", label: "Delhi NCR", factor: 1.0 },
-    { value: "bangalore", label: "Bangalore", factor: 1.1 },
-    { value: "pune", label: "Pune", factor: 0.95 },
-    { value: "hyderabad", label: "Hyderabad", factor: 0.9 },
+    { value: "Jamnagar", label: "Jamnagar", factor: 1.2 },
+    { value: "Porbander", label: "Porbander", factor: 1.0 },
+    { value: "Bhavnagar", label: "Bhavnagar", factor: 1.1 },
+    { value: "Surat", label: "Surat", factor: 0.95 },
 ];
 
 const DESIGN_LEVELS = [
@@ -29,7 +28,7 @@ const DESIGN_LEVELS = [
 const CostEstimator = () => {
     const [area, setArea] = useState([1000]);
     const [propertyType, setPropertyType] = useState("apartment");
-    const [location, setLocation] = useState("mumbai");
+    const [location, setLocation] = useState("Jamnagar");
     const [designLevel, setDesignLevel] = useState("premium");
     const [estimatedCost, setEstimatedCost] = useState({ min: 0, max: 0 });
 

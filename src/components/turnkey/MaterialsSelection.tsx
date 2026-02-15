@@ -4,19 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const materials = {
     wood: [
-        { name: "Teak Wood", img: "https://images.unsplash.com/photo-1543013862-2313620f4f9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Oak Veneer", img: "https://images.unsplash.com/photo-1517549649033-66f81e6e9692?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Walnut Finish", img: "https://images.unsplash.com/photo-1610271171098-acbf7a3243d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+        { name: "Teak Wood", img: "https://images.unsplash.com/photo-1543013862-2313620f4f9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Oak Veneer", img: "https://images.unsplash.com/photo-1517549649033-66f81e6e9692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Walnut Finish", img: "https://images.unsplash.com/photo-1621262973809-9407137f61ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
     ],
     fabric: [
-        { name: "Velvet", img: "https://images.unsplash.com/photo-1594042875152-3d779f6479f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Linen", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Leather", img: "https://images.unsplash.com/photo-1550254478-ead40cc54513?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+        { name: "Velvet", img: "https://images.unsplash.com/photo-1617260555981-5d9c02d7e00e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Linen", img: "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Leather", img: "https://images.unsplash.com/photo-1550254478-ead40cc54513?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
     ],
     hardware: [
-        { name: "Hettich", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Hafele", img: "https://images.unsplash.com/photo-1581105435940-d37eb6f76c52?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
-        { name: "Blum", img: "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" }
+        { name: "Hettich", img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Hafele", img: "https://images.unsplash.com/photo-1565183928294-7063f23ce0f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
+        { name: "Blum", img: "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
     ]
 };
 
