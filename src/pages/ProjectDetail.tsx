@@ -263,7 +263,7 @@ const ProjectDetail = () => {
                   <React.Fragment key={i}>
                     <div className="relative rounded-xl overflow-hidden">
                       <img src={pair.before} alt="Before renovation" className="w-full aspect-[4/3] object-cover" />
-                      <Badge className="absolute top-4 left-4 bg-red-500 text-white">Before</Badge>
+                      <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground">Before</Badge>
                     </div>
                     <div className="relative rounded-xl overflow-hidden">
                       <img src={pair.after} alt="After renovation by Dream Decor" className="w-full aspect-[4/3] object-cover" />
