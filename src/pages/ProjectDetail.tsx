@@ -267,7 +267,7 @@ const ProjectDetail = () => {
                     </div>
                     <div className="relative rounded-xl overflow-hidden">
                       <img src={pair.after} alt="After renovation by Dream Decor" className="w-full aspect-[4/3] object-cover" />
-                      <Badge className="absolute top-4 left-4 bg-green-500 text-white">After</Badge>
+                      <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">After</Badge>
                     </div>
                   </React.Fragment>
                 ))}
