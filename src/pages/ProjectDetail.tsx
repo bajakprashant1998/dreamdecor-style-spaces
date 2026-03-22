@@ -286,7 +286,7 @@ const ProjectDetail = () => {
                 <Card className="p-8 md:p-12 border-primary/20">
                   <div className="flex justify-center gap-1 mb-6">
                     {Array.from({ length: project.testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="h-6 w-6 fill-accent text-accent" />
                     ))}
                   </div>
                   <blockquote className="text-lg md:text-xl text-muted-foreground italic leading-relaxed mb-6">
