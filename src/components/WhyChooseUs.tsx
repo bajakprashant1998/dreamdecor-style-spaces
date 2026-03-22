@@ -1,26 +1,26 @@
-import { Truck, ShieldCheck, Undo2, Award } from "lucide-react";
+import { ShieldCheck, Clock, CheckSquare, IndianRupee } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [
   {
-    icon: Award,
-    title: "Premium Craftsmanship",
-    description: "Handcrafted by skilled artisans using the finest solid wood and premium materials.",
+    icon: IndianRupee,
+    title: "Price Match Guarantee",
+    description: "Factory-direct pricing with no middlemen. We guarantee the best value for premium quality furniture.",
   },
   {
-    icon: Truck,
-    title: "Pan-India Delivery",
-    description: "Free delivery across Gujarat & affordable shipping to 500+ cities across India.",
-  },
-  {
-    icon: Undo2,
-    title: "Easy Returns",
-    description: "7-day hassle-free return policy. Not satisfied? We'll pick it up for free.",
+    icon: Clock,
+    title: "45–55 Days Move-In",
+    description: "Complete turnkey interior execution in just 45 to 55 days. Your dream space, delivered on time.",
   },
   {
     icon: ShieldCheck,
-    title: "10+ Years of Trust",
-    description: "Serving thousands of happy families from our stores in Jamnagar & beyond.",
+    title: "10 Year Warranty",
+    description: "Industry-leading 10-year warranty on all custom-manufactured furniture and woodwork.",
+  },
+  {
+    icon: CheckSquare,
+    title: "146 Quality Checks",
+    description: "Every project undergoes 146 rigorous quality checkpoints ensuring flawless finish and durability.",
   },
 ];
 
