@@ -21,14 +21,14 @@ const Index = () => {
         <ProductSection
           title="Trending Now"
           subtitle="What's Hot"
-          filter={(p) => p.badge === "Trending" || p.badge === "New" || p.badge === "Hot Deal"}
+          filter="featured"
         />
 
         <div className="bg-secondary/30">
           <ProductSection
             title="Bestsellers"
             subtitle="Customer Favorites"
-            filter={(p) => p.badge === "Bestseller" || p.rating >= 4.5}
+            filter="bestseller"
           />
         </div>
 
