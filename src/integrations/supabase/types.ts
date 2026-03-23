@@ -137,89 +137,143 @@ export type Database = {
       products: {
         Row: {
           badge: string | null
+          brand: string | null
+          brochure_url: string | null
           category: string | null
           color: string | null
           created_at: string | null
+          delivery_time: string | null
           description: string | null
           dimensions: string | null
+          focus_keyword: string | null
           id: string
           images: Json | null
           in_stock: boolean | null
+          interior_tags: string[] | null
           is_bestseller: boolean | null
           is_featured: boolean | null
           is_new: boolean | null
           is_published: boolean | null
+          low_stock_alert: number | null
           material: string | null
+          meta_description: string | null
+          meta_title: string | null
+          model: string | null
           name: string
           original_price: number | null
           price: number
+          product_type: string | null
           rating: number | null
+          return_policy: string | null
           review_count: number | null
+          shipping_weight: string | null
           short_description: string | null
+          sku: string | null
           slug: string
           sort_order: number | null
           specifications: Json | null
+          status: string | null
+          stock_quantity: number | null
           style: string | null
           subcategory: string | null
           updated_at: string | null
+          video_url: string | null
+          warehouse_location: string | null
+          warranty: string | null
           weight: string | null
         }
         Insert: {
           badge?: string | null
+          brand?: string | null
+          brochure_url?: string | null
           category?: string | null
           color?: string | null
           created_at?: string | null
+          delivery_time?: string | null
           description?: string | null
           dimensions?: string | null
+          focus_keyword?: string | null
           id?: string
           images?: Json | null
           in_stock?: boolean | null
+          interior_tags?: string[] | null
           is_bestseller?: boolean | null
           is_featured?: boolean | null
           is_new?: boolean | null
           is_published?: boolean | null
+          low_stock_alert?: number | null
           material?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          model?: string | null
           name: string
           original_price?: number | null
           price?: number
+          product_type?: string | null
           rating?: number | null
+          return_policy?: string | null
           review_count?: number | null
+          shipping_weight?: string | null
           short_description?: string | null
+          sku?: string | null
           slug: string
           sort_order?: number | null
           specifications?: Json | null
+          status?: string | null
+          stock_quantity?: number | null
           style?: string | null
           subcategory?: string | null
           updated_at?: string | null
+          video_url?: string | null
+          warehouse_location?: string | null
+          warranty?: string | null
           weight?: string | null
         }
         Update: {
           badge?: string | null
+          brand?: string | null
+          brochure_url?: string | null
           category?: string | null
           color?: string | null
           created_at?: string | null
+          delivery_time?: string | null
           description?: string | null
           dimensions?: string | null
+          focus_keyword?: string | null
           id?: string
           images?: Json | null
           in_stock?: boolean | null
+          interior_tags?: string[] | null
           is_bestseller?: boolean | null
           is_featured?: boolean | null
           is_new?: boolean | null
           is_published?: boolean | null
+          low_stock_alert?: number | null
           material?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          model?: string | null
           name?: string
           original_price?: number | null
           price?: number
+          product_type?: string | null
           rating?: number | null
+          return_policy?: string | null
           review_count?: number | null
+          shipping_weight?: string | null
           short_description?: string | null
+          sku?: string | null
           slug?: string
           sort_order?: number | null
           specifications?: Json | null
+          status?: string | null
+          stock_quantity?: number | null
           style?: string | null
           subcategory?: string | null
           updated_at?: string | null
+          video_url?: string | null
+          warehouse_location?: string | null
+          warranty?: string | null
           weight?: string | null
         }
         Relationships: []

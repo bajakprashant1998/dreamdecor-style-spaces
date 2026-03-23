@@ -1,0 +1,20 @@
+
+ALTER TABLE public.products
+  ADD COLUMN IF NOT EXISTS sku text,
+  ADD COLUMN IF NOT EXISTS brand text,
+  ADD COLUMN IF NOT EXISTS model text,
+  ADD COLUMN IF NOT EXISTS video_url text,
+  ADD COLUMN IF NOT EXISTS brochure_url text,
+  ADD COLUMN IF NOT EXISTS stock_quantity integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS low_stock_alert integer DEFAULT 5,
+  ADD COLUMN IF NOT EXISTS warehouse_location text,
+  ADD COLUMN IF NOT EXISTS delivery_time text DEFAULT '5-7 business days',
+  ADD COLUMN IF NOT EXISTS shipping_weight text,
+  ADD COLUMN IF NOT EXISTS return_policy text DEFAULT '7-day return policy',
+  ADD COLUMN IF NOT EXISTS warranty text,
+  ADD COLUMN IF NOT EXISTS meta_title text,
+  ADD COLUMN IF NOT EXISTS meta_description text,
+  ADD COLUMN IF NOT EXISTS focus_keyword text,
+  ADD COLUMN IF NOT EXISTS interior_tags text[] DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS product_type text,
+  ADD COLUMN IF NOT EXISTS status text DEFAULT 'published';
