@@ -203,7 +203,7 @@ export default function AdminProjects() {
       const { error } = await supabase.from("projects").insert(payload as any);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     } else {
-      const { error } = await supabase.from("projects").update(payload).eq("id", editing.id!);
+      const { error } = await supabase.from("projects").update(payload as any).eq("id", editing.id!);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     }
     toast({ title: isNew ? "Project created!" : "Project updated!" });
