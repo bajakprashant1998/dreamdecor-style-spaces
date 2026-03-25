@@ -4,10 +4,48 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import logo from "@/assets/logo.webp";
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (isSignup) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: name, phone },
+            emailRedirectTo: window.location.origin,
+          },
+        });
+        if (error) throw error;
+        toast.success("Account created! Please check your email to verify.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Signed in successfully!");
+        navigate("/");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -24,17 +62,29 @@ export default function Login() {
             </p>
           </div>
 
-          <form className="border rounded-lg p-6 space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="border rounded-lg p-6 space-y-4" onSubmit={handleSubmit}>
             {isSignup && (
-              <div><Label>Full Name</Label><Input placeholder="Your name" className="mt-1" /></div>
+              <div>
+                <Label>Full Name</Label>
+                <Input placeholder="Your name" className="mt-1" value={name} onChange={(e) => setName(e.target.value)} required />
+              </div>
             )}
-            <div><Label>Email</Label><Input type="email" placeholder="Email address" className="mt-1" /></div>
-            <div><Label>Password</Label><Input type="password" placeholder="Password" className="mt-1" /></div>
+            <div>
+              <Label>Email</Label>
+              <Input type="email" placeholder="Email address" className="mt-1" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div>
+              <Label>Password</Label>
+              <Input type="password" placeholder="Password" className="mt-1" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+            </div>
             {isSignup && (
-              <div><Label>Phone</Label><Input placeholder="Phone number" className="mt-1" /></div>
+              <div>
+                <Label>Phone</Label>
+                <Input placeholder="Phone number" className="mt-1" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              </div>
             )}
-            <Button type="submit" className="w-full rounded-none h-11">
-              {isSignup ? "Create Account" : "Sign In"}
+            <Button type="submit" className="w-full rounded-none h-11" disabled={loading}>
+              {loading ? "Please wait..." : isSignup ? "Create Account" : "Sign In"}
             </Button>
           </form>
 
