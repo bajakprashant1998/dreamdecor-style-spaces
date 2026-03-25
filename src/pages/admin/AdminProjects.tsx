@@ -200,7 +200,7 @@ export default function AdminProjects() {
     };
 
     if (isNew) {
-      const { error } = await supabase.from("projects").insert(payload);
+      const { error } = await supabase.from("projects").insert(payload as any);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     } else {
       const { error } = await supabase.from("projects").update(payload).eq("id", editing.id!);
