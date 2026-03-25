@@ -173,7 +173,7 @@ export default function AdminProjects() {
 
   const save = async () => {
     if (!editing) return;
-    const payload = {
+    const payload: Record<string, any> = {
       slug: editing.slug || "",
       title: editing.title || "",
       tagline: editing.tagline || null,
