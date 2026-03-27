@@ -95,6 +95,149 @@ export type Database = {
         }
         Relationships: []
       }
+      design_idea_categories: {
+        Row: {
+          cover_image: string | null
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_published: boolean | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          seo_content: string | null
+          slug: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          seo_content?: string | null
+          slug: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          seo_content?: string | null
+          slug?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      design_ideas: {
+        Row: {
+          backsplash: string | null
+          category_id: string
+          colours: Json | null
+          countertop_material: string | null
+          created_at: string | null
+          description: string | null
+          focus_keyword: string | null
+          id: string
+          ideal_for: string | null
+          images: Json | null
+          is_published: boolean | null
+          is_trending: boolean | null
+          layout: string | null
+          meta_description: string | null
+          meta_title: string | null
+          room_dimension: string | null
+          short_description: string | null
+          shutter_finish: Json | null
+          slug: string
+          sort_order: number | null
+          special_features: string | null
+          storage_features: string | null
+          style: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          backsplash?: string | null
+          category_id: string
+          colours?: Json | null
+          countertop_material?: string | null
+          created_at?: string | null
+          description?: string | null
+          focus_keyword?: string | null
+          id?: string
+          ideal_for?: string | null
+          images?: Json | null
+          is_published?: boolean | null
+          is_trending?: boolean | null
+          layout?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          room_dimension?: string | null
+          short_description?: string | null
+          shutter_finish?: Json | null
+          slug: string
+          sort_order?: number | null
+          special_features?: string | null
+          storage_features?: string | null
+          style?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          backsplash?: string | null
+          category_id?: string
+          colours?: Json | null
+          countertop_material?: string | null
+          created_at?: string | null
+          description?: string | null
+          focus_keyword?: string | null
+          id?: string
+          ideal_for?: string | null
+          images?: Json | null
+          is_published?: boolean | null
+          is_trending?: boolean | null
+          layout?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          room_dimension?: string | null
+          short_description?: string | null
+          shutter_finish?: Json | null
+          slug?: string
+          sort_order?: number | null
+          special_features?: string | null
+          storage_features?: string | null
+          style?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "design_ideas_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "design_idea_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           created_at: string | null
