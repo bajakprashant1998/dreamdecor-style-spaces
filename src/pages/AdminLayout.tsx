@@ -3,7 +3,7 @@ import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard, FolderOpen, Package, MessageSquare, FileText,
-  Info, LogOut, Menu, X,
+  Info, LogOut, Menu, X, Palette, Layers,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -11,6 +11,8 @@ const navItems = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/projects", label: "Projects", icon: FolderOpen },
   { path: "/admin/products", label: "Products", icon: Package },
+  { path: "/admin/design-categories", label: "Design Categories", icon: Palette },
+  { path: "/admin/design-ideas", label: "Design Ideas", icon: Layers },
   { path: "/admin/leads", label: "Leads", icon: MessageSquare },
   { path: "/admin/blog", label: "Blog Posts", icon: FileText },
   { path: "/admin/about", label: "About Content", icon: Info },

@@ -36,9 +36,16 @@ export default function Footer() {
           <div>
             <h4 className="font-display text-base font-semibold text-background mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              {["Shop All", "Living Room", "Bedroom", "Dining", "Office", "Decor"].map((l) => (
-                <li key={l}>
-                  <Link to="/shop" className="hover:text-primary transition-colors">{l}</Link>
+              {[
+                { label: "Shop All", path: "/shop" },
+                { label: "Design Ideas", path: "/design-ideas" },
+                { label: "Turnkey Projects", path: "/turnkey-projects" },
+                { label: "Blog", path: "/blog" },
+                { label: "About Us", path: "/about" },
+                { label: "Contact", path: "/contact" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <Link to={l.path} className="hover:text-primary transition-colors">{l.label}</Link>
                 </li>
               ))}
             </ul>

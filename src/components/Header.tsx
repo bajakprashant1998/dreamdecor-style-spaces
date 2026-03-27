@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, Heart, ShoppingCart, User, Menu, X, MapPin, Phone } from "lucide-react";
+import { Search, Heart, ShoppingCart, User, Menu, X, MapPin, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.webp";
 
-const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Turnkey Projects", path: "/turnkey-projects" },
-  { name: "Shop", path: "/shop" },
-  { name: "About Us", path: "/about" },
-  { name: "Contact", path: "/contact" },
-];
+interface DesignCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 const cities = ["Jamnagar", "Porbandar", "Bhavnagar", "Surat"];
 
@@ -18,12 +17,34 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState(cities[0]);
+  const [designCategories, setDesignCategories] = useState<DesignCategory[]>([]);
+  const [designDropdownOpen, setDesignDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  useEffect(() => {
+    supabase
+      .from("design_idea_categories")
+      .select("id, name, slug")
+      .eq("is_published", true)
+      .order("sort_order")
+      .then(({ data }) => {
+        if (data) setDesignCategories(data as unknown as DesignCategory[]);
+      });
+  }, []);
+
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Turnkey Projects", path: "/turnkey-projects" },
+    { name: "Shop", path: "/shop" },
+    { name: "About Us", path: "/about" },
+    { name: "Blog", path: "/blog" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   return (
     <>
@@ -45,9 +66,7 @@ export default function Header() {
               className="bg-transparent border-none text-accent-foreground text-xs cursor-pointer focus:outline-none"
             >
               {cities.map((c) => (
-                <option key={c} value={c} className="text-foreground">
-                  {c}
-                </option>
+                <option key={c} value={c} className="text-foreground">{c}</option>
               ))}
             </select>
           </div>
@@ -76,8 +95,51 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
+          <nav className="hidden lg:flex items-center gap-6">
+            {navLinks.slice(0, 2).map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            {/* Design Ideas Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setDesignDropdownOpen(true)}
+              onMouseLeave={() => setDesignDropdownOpen(false)}
+            >
+              <Link
+                to="/design-ideas"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+              >
+                Design Ideas <ChevronDown className={`h-3 w-3 transition-transform ${designDropdownOpen ? "rotate-180" : ""}`} />
+              </Link>
+              {designDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 bg-card border rounded-lg shadow-lg py-2 min-w-[220px] z-50">
+                  <Link
+                    to="/design-ideas"
+                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors font-medium"
+                  >
+                    All Design Ideas
+                  </Link>
+                  {designCategories.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/design-ideas/${cat.slug}`}
+                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {navLinks.slice(2).map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
@@ -134,6 +196,24 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.name}
+                </Link>
+              ))}
+              {/* Design Ideas in mobile */}
+              <Link
+                to="/design-ideas"
+                className="text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                Design Ideas
+              </Link>
+              {designCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  to={`/design-ideas/${cat.slug}`}
+                  className="text-sm py-1.5 pl-4 text-muted-foreground hover:text-primary transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {cat.name}
                 </Link>
               ))}
               <div className="flex items-center gap-2 pt-2 border-t text-xs text-muted-foreground">
