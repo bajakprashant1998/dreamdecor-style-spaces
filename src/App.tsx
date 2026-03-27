@@ -25,6 +25,11 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminAbout from "./pages/admin/AdminAbout";
+import AdminDesignCategories from "./pages/admin/AdminDesignCategories";
+import AdminDesignIdeas from "./pages/admin/AdminDesignIdeas";
+import DesignIdeas from "./pages/DesignIdeas";
+import DesignIdeaCategory from "./pages/DesignIdeaCategory";
+import DesignIdeaDetail from "./pages/DesignIdeaDetail";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -52,6 +57,9 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
+              <Route path="/design-ideas" element={<DesignIdeas />} />
+              <Route path="/design-ideas/:categorySlug" element={<DesignIdeaCategory />} />
+              <Route path="/design-ideas/:categorySlug/designs/:designSlug" element={<DesignIdeaDetail />} />
               <Route path="/admin-login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
@@ -60,6 +68,8 @@ const App = () => (
                 <Route path="leads" element={<AdminLeads />} />
                 <Route path="blog" element={<AdminBlog />} />
                 <Route path="about" element={<AdminAbout />} />
+                <Route path="design-categories" element={<AdminDesignCategories />} />
+                <Route path="design-ideas" element={<AdminDesignIdeas />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
