@@ -1,106 +1,25 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, Eye, SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { Search, Download, Eye, SlidersHorizontal, X, ChevronDown, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CatalogueItem {
   id: string;
   title: string;
+  slug: string;
   category: string;
-  size: string;
-  image: string;
-  file: string;
-  tag: string;
-  description: string;
+  description: string | null;
+  thumbnail_url: string | null;
+  pdf_url: string | null;
+  file_size: string | null;
+  tag: string | null;
 }
-
-const catalogueData: CatalogueItem[] = [
-  {
-    id: "1",
-    title: "Modern Living Room Furniture Catalogue",
-    category: "Living Room",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
-    file: "#",
-    tag: "Trending",
-    description: "Explore contemporary living room designs with premium sofas, coffee tables, and accent pieces.",
-  },
-  {
-    id: "2",
-    title: "Luxury Bedroom Interior Catalogue",
-    category: "Bedroom",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80",
-    file: "#",
-    tag: "New",
-    description: "Curated bedroom collections featuring elegant beds, wardrobes, and nightstands.",
-  },
-  {
-    id: "3",
-    title: "Office Workspace Furniture Catalogue",
-    category: "Office",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80",
-    file: "#",
-    tag: "Popular",
-    description: "Professional office furniture including ergonomic desks, chairs, and storage solutions.",
-  },
-  {
-    id: "4",
-    title: "Modern Kitchen Interior Catalogue",
-    category: "Kitchen",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
-    file: "#",
-    tag: "Trending",
-    description: "Complete kitchen interior solutions with modular cabinets, islands, and dining sets.",
-  },
-  {
-    id: "5",
-    title: "Compact Studio Furniture Catalogue",
-    category: "Living Room",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",
-    file: "#",
-    tag: "New",
-    description: "Space-saving furniture ideas perfect for compact apartments and studio living.",
-  },
-  {
-    id: "6",
-    title: "Premium Bedroom Suite Collection",
-    category: "Bedroom",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80",
-    file: "#",
-    tag: "Popular",
-    description: "Luxury bedroom suites with coordinated furniture sets for a harmonious look.",
-  },
-  {
-    id: "7",
-    title: "Executive Office Design Catalogue",
-    category: "Office",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
-    file: "#",
-    tag: "Trending",
-    description: "High-end executive office interiors for productive and stylish workspaces.",
-  },
-  {
-    id: "8",
-    title: "Modular Kitchen Catalogue 2026",
-    category: "Kitchen",
-    size: "100 MB",
-    image: "https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=800&q=80",
-    file: "#",
-    tag: "New",
-    description: "Latest modular kitchen designs with smart storage and premium finishes.",
-  },
-];
 
 const categories = ["All", "Living Room", "Bedroom", "Office", "Kitchen"];
 const sortOptions = [
@@ -118,37 +37,49 @@ const tagColors: Record<string, string> = {
 const ITEMS_PER_PAGE = 8;
 
 export default function Catalogue() {
+  const [items, setItems] = useState<CatalogueItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("latest");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
-  const filtered = useMemo(() => {
-    let items = [...catalogueData];
+  useEffect(() => {
+    const fetchCatalogues = async () => {
+      const { data } = await supabase
+        .from("catalogues")
+        .select("id, title, slug, category, description, thumbnail_url, pdf_url, file_size, tag")
+        .eq("is_published", true)
+        .order("sort_order");
+      if (data) setItems(data as CatalogueItem[]);
+      setLoading(false);
+    };
+    fetchCatalogues();
+  }, []);
 
-    // Search
+  const filtered = useMemo(() => {
+    let result = [...items];
+
     if (search.trim()) {
       const q = search.toLowerCase();
-      items = items.filter(
+      result = result.filter(
         (i) =>
           i.title.toLowerCase().includes(q) ||
           i.category.toLowerCase().includes(q) ||
-          i.description.toLowerCase().includes(q)
+          (i.description || "").toLowerCase().includes(q)
       );
     }
 
-    // Category
     if (activeCategory !== "All") {
-      items = items.filter((i) => i.category === activeCategory);
+      result = result.filter((i) => i.category === activeCategory);
     }
 
-    // Sort
-    if (sortBy === "az") items.sort((a, b) => a.title.localeCompare(b.title));
-    if (sortBy === "popular") items.sort((a, b) => (a.tag === "Popular" ? -1 : b.tag === "Popular" ? 1 : 0));
+    if (sortBy === "az") result.sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "popular") result.sort((a, b) => (a.tag === "Popular" ? -1 : b.tag === "Popular" ? 1 : 0));
 
-    return items;
-  }, [search, activeCategory, sortBy]);
+    return result;
+  }, [items, search, activeCategory, sortBy]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -171,7 +102,6 @@ export default function Catalogue() {
             Browse our curated collection of premium interior design catalogues. Preview and download in one click.
           </p>
 
-          {/* Search */}
           <div className="mt-8 max-w-lg mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -243,29 +173,17 @@ export default function Catalogue() {
             </Button>
           </div>
 
-          {/* Mobile Filters Dropdown */}
+          {/* Mobile Filters */}
           <AnimatePresence>
             {filtersOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="lg:hidden overflow-hidden -mt-4"
-              >
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="lg:hidden overflow-hidden -mt-4">
                 <div className="bg-card border rounded-lg p-4 space-y-4">
                   <div>
                     <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">Category</h4>
                     <div className="flex flex-wrap gap-2">
                       {categories.map((cat) => (
-                        <button
-                          key={cat}
-                          onClick={() => { setActiveCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                            activeCategory === cat
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-background text-foreground border-border hover:border-primary"
-                          }`}
-                        >
+                        <button key={cat} onClick={() => { setActiveCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${activeCategory === cat ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary"}`}>
                           {cat}
                         </button>
                       ))}
@@ -275,15 +193,8 @@ export default function Catalogue() {
                     <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">Sort</h4>
                     <div className="flex flex-wrap gap-2">
                       {sortOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => setSortBy(opt.value)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                            sortBy === opt.value
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-background text-foreground border-border hover:border-primary"
-                          }`}
-                        >
+                        <button key={opt.value} onClick={() => setSortBy(opt.value)}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${sortBy === opt.value ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary"}`}>
                           {opt.label}
                         </button>
                       ))}
@@ -300,7 +211,11 @@ export default function Catalogue() {
               <p className="text-sm text-muted-foreground">{filtered.length} catalogue{filtered.length !== 1 ? "s" : ""} found</p>
             </div>
 
-            {visible.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : visible.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-muted-foreground text-lg">No catalogues match your search.</p>
                 <Button variant="outline" className="mt-4" onClick={() => { setSearch(""); setActiveCategory("All"); }}>
@@ -311,23 +226,15 @@ export default function Catalogue() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
                   {visible.map((item, i) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 24 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.04, duration: 0.4 }}
-                    >
+                    <motion.div key={item.id} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04, duration: 0.4 }}>
                       <div className="group relative bg-card rounded-xl border border-border overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                        {/* Image */}
                         <div className="relative aspect-[4/3] overflow-hidden">
                           <img
-                            src={item.image}
+                            src={item.thumbnail_url || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80"}
                             alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             loading="lazy"
                           />
-                          {/* Hover overlay */}
                           <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors duration-300 flex items-center justify-center">
                             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="bg-background/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
@@ -335,7 +242,6 @@ export default function Catalogue() {
                               </div>
                             </div>
                           </div>
-                          {/* Tag */}
                           {item.tag && (
                             <Badge className={`absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider border ${tagColors[item.tag] || ""}`}>
                               {item.tag}
@@ -343,26 +249,24 @@ export default function Catalogue() {
                           )}
                         </div>
 
-                        {/* Content */}
                         <div className="p-5">
-                          <span className="text-[10px] font-semibold uppercase tracking-widest text-primary">
-                            {item.category}
-                          </span>
+                          <span className="text-[10px] font-semibold uppercase tracking-widest text-primary">{item.category}</span>
                           <h3 className="font-display text-base font-semibold mt-1 leading-snug line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                             {item.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                            {item.description}
-                          </p>
+                          {item.description && (
+                            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{item.description}</p>
+                          )}
 
                           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                            <span className="text-xs text-muted-foreground font-medium">
-                              PDF • {item.size}
-                            </span>
+                            <span className="text-xs text-muted-foreground font-medium">PDF • {item.file_size || "—"}</span>
                             <Button
                               size="sm"
                               className="gap-2 rounded-full text-xs h-9 px-5"
-                              onClick={() => window.open(item.file, "_blank")}
+                              onClick={() => {
+                                if (item.pdf_url) window.open(item.pdf_url, "_blank");
+                              }}
+                              disabled={!item.pdf_url}
                             >
                               <Download className="h-3.5 w-3.5" />
                               Download
@@ -376,12 +280,7 @@ export default function Catalogue() {
 
                 {hasMore && (
                   <div className="text-center mt-10">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => setVisibleCount((p) => p + ITEMS_PER_PAGE)}
-                      className="rounded-full px-10"
-                    >
+                    <Button variant="outline" size="lg" onClick={() => setVisibleCount((p) => p + ITEMS_PER_PAGE)} className="rounded-full px-10">
                       Load More Catalogues
                     </Button>
                   </div>
