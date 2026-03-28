@@ -95,6 +95,63 @@ export type Database = {
         }
         Relationships: []
       }
+      catalogues: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          download_count: number | null
+          file_size: string | null
+          id: string
+          is_published: boolean | null
+          meta_description: string | null
+          meta_title: string | null
+          pdf_url: string | null
+          slug: string
+          sort_order: number | null
+          tag: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          download_count?: number | null
+          file_size?: string | null
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pdf_url?: string | null
+          slug: string
+          sort_order?: number | null
+          tag?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          download_count?: number | null
+          file_size?: string | null
+          id?: string
+          is_published?: boolean | null
+          meta_description?: string | null
+          meta_title?: string | null
+          pdf_url?: string | null
+          slug?: string
+          sort_order?: number | null
+          tag?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       design_idea_categories: {
         Row: {
           cover_image: string | null
