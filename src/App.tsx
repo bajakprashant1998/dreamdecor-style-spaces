@@ -30,6 +30,7 @@ import AdminDesignIdeas from "./pages/admin/AdminDesignIdeas";
 import DesignIdeas from "./pages/DesignIdeas";
 import DesignIdeaCategory from "./pages/DesignIdeaCategory";
 import DesignIdeaDetail from "./pages/DesignIdeaDetail";
+import Catalogue from "./pages/Catalogue";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
+              <Route path="/catalogue" element={<Catalogue />} />
               <Route path="/design-ideas" element={<DesignIdeas />} />
               <Route path="/design-ideas/:categorySlug" element={<DesignIdeaCategory />} />
               <Route path="/design-ideas/:categorySlug/designs/:designSlug" element={<DesignIdeaDetail />} />

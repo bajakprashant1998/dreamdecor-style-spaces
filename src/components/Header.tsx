@@ -41,6 +41,7 @@ export default function Header() {
     { name: "Home", path: "/" },
     { name: "Turnkey Projects", path: "/turnkey-projects" },
     { name: "Shop", path: "/shop" },
+    { name: "Catalogue", path: "/catalogue" },
     { name: "About Us", path: "/about" },
     { name: "Blog", path: "/blog" },
     { name: "Contact", path: "/contact" },
