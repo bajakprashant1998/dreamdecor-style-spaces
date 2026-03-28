@@ -27,6 +27,7 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminAbout from "./pages/admin/AdminAbout";
 import AdminDesignCategories from "./pages/admin/AdminDesignCategories";
 import AdminDesignIdeas from "./pages/admin/AdminDesignIdeas";
+import AdminCatalogues from "./pages/admin/AdminCatalogues";
 import DesignIdeas from "./pages/DesignIdeas";
 import DesignIdeaCategory from "./pages/DesignIdeaCategory";
 import DesignIdeaDetail from "./pages/DesignIdeaDetail";
@@ -72,6 +73,7 @@ const App = () => (
                 <Route path="about" element={<AdminAbout />} />
                 <Route path="design-categories" element={<AdminDesignCategories />} />
                 <Route path="design-ideas" element={<AdminDesignIdeas />} />
+                <Route path="catalogues" element={<AdminCatalogues />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
