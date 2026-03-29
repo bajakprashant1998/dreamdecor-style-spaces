@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Search, Heart, ShoppingCart, User, Menu, X, MapPin, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.webp";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DesignCategory {
   id: string;
@@ -19,12 +20,18 @@ export default function Header() {
   const [selectedCity, setSelectedCity] = useState(cities[0]);
   const [designCategories, setDesignCategories] = useState<DesignCategory[]>([]);
   const [designDropdownOpen, setDesignDropdownOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handler = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     supabase
@@ -47,19 +54,23 @@ export default function Header() {
     { name: "Contact", path: "/contact" },
   ];
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <>
       {/* Top bar */}
-      <div className="bg-accent text-accent-foreground text-xs py-2 hidden md:block">
+      <div className="bg-accent text-accent-foreground text-xs py-1.5 hidden md:block">
         <div className="container flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center gap-5">
+            <a href="tel:02882661287" className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
               <Phone className="h-3 w-3" />
               0288 - 2661287 / 87582 99988
-            </span>
-            <span>dream_decor@rediffmail.com</span>
+            </a>
+            <a href="mailto:dream_decor@rediffmail.com" className="hover:opacity-80 transition-opacity">
+              dream_decor@rediffmail.com
+            </a>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <MapPin className="h-3 w-3" />
             <select
               value={selectedCity}
@@ -76,32 +87,29 @@ export default function Header() {
 
       {/* Main header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-            ? "bg-background/95 backdrop-blur-md shadow-md"
-            : "bg-background"
-          }`}
+        className={`sticky top-0 z-50 transition-all duration-300 border-b ${
+          isScrolled
+            ? "bg-background/95 backdrop-blur-md shadow-lg border-border/50"
+            : "bg-background border-transparent"
+        }`}
       >
-        <div className="container flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0">
-            <img src={logo} alt="Dream Decor Furniture" className="h-10 md:h-14 w-auto" />
-            <div className="hidden sm:block leading-tight">
-              <span className="font-display text-lg md:text-xl font-bold text-foreground tracking-tight">
-                Dream Decor
-              </span>
-              <span className="block text-[10px] md:text-xs text-muted-foreground tracking-widest uppercase">
-                Furniture
-              </span>
-            </div>
+        <div className="container flex items-center justify-between h-16 md:h-[72px]">
+          {/* Logo only */}
+          <Link to="/" className="shrink-0">
+            <img src={logo} alt="Dream Decor Furniture" className="h-10 md:h-12 w-auto" />
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-6">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.slice(0, 2).map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                className={`text-sm font-medium px-3 py-2 rounded-md transition-colors ${
+                  isActive(link.path)
+                    ? "text-primary bg-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
                 {link.name}
               </Link>
@@ -115,36 +123,54 @@ export default function Header() {
             >
               <Link
                 to="/design-ideas"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                className={`text-sm font-medium px-3 py-2 rounded-md transition-colors flex items-center gap-1 ${
+                  location.pathname.startsWith("/design-ideas")
+                    ? "text-primary bg-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
-                Design Ideas <ChevronDown className={`h-3 w-3 transition-transform ${designDropdownOpen ? "rotate-180" : ""}`} />
+                Design Ideas
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${designDropdownOpen ? "rotate-180" : ""}`} />
               </Link>
-              {designDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-card border rounded-lg shadow-lg py-2 min-w-[220px] z-50">
-                  <Link
-                    to="/design-ideas"
-                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors font-medium"
+              <AnimatePresence>
+                {designDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 mt-1 bg-card border border-border rounded-xl shadow-xl py-1.5 min-w-[240px] z-50"
                   >
-                    All Design Ideas
-                  </Link>
-                  {designCategories.map((cat) => (
                     <Link
-                      key={cat.id}
-                      to={`/design-ideas/${cat.slug}`}
-                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+                      to="/design-ideas"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors font-medium"
                     >
-                      {cat.name}
+                      All Design Ideas
                     </Link>
-                  ))}
-                </div>
-              )}
+                    <div className="h-px bg-border mx-3 my-1" />
+                    {designCategories.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        to={`/design-ideas/${cat.slug}`}
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {navLinks.slice(2).map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+                className={`text-sm font-medium px-3 py-2 rounded-md transition-colors ${
+                  isActive(link.path)
+                    ? "text-primary bg-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
                 {link.name}
               </Link>
@@ -152,32 +178,37 @@ export default function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-3">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Search className="h-5 w-5" />
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden md:flex h-9 w-9 rounded-full hover:bg-muted"
+              onClick={() => setSearchOpen(!searchOpen)}
+            >
+              <Search className="h-[18px] w-[18px]" />
             </Button>
             <Link to="/wishlist">
-              <Button variant="ghost" size="icon">
-                <Heart className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-muted">
+                <Heart className="h-[18px] w-[18px]" />
               </Button>
             </Link>
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-muted">
+                <ShoppingCart className="h-[18px] w-[18px]" />
               </Button>
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
                 0
               </span>
             </Link>
             <Link to="/login" className="hidden md:block">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-muted">
+                <User className="h-[18px] w-[18px]" />
               </Button>
             </Link>
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden h-9 w-9 rounded-full"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -186,52 +217,65 @@ export default function Header() {
         </div>
 
         {/* Mobile nav */}
-        {mobileOpen && (
-          <div className="lg:hidden border-t bg-background">
-            <nav className="container py-4 flex flex-col gap-3">
-              {navLinks.map((link) => (
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden border-t border-border bg-background overflow-hidden"
+            >
+              <nav className="container py-4 flex flex-col gap-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`text-sm font-medium py-2.5 px-3 rounded-lg transition-colors ${
+                      isActive(link.path)
+                        ? "text-primary bg-primary/5"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                {/* Design Ideas in mobile */}
                 <Link
-                  key={link.name}
-                  to={link.path}
-                  className="text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() => setMobileOpen(false)}
+                  to="/design-ideas"
+                  className={`text-sm font-medium py-2.5 px-3 rounded-lg transition-colors ${
+                    location.pathname.startsWith("/design-ideas")
+                      ? "text-primary bg-primary/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
                 >
-                  {link.name}
+                  Design Ideas
                 </Link>
-              ))}
-              {/* Design Ideas in mobile */}
-              <Link
-                to="/design-ideas"
-                className="text-sm font-medium py-2 text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setMobileOpen(false)}
-              >
-                Design Ideas
-              </Link>
-              {designCategories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  to={`/design-ideas/${cat.slug}`}
-                  className="text-sm py-1.5 pl-4 text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {cat.name}
-                </Link>
-              ))}
-              <div className="flex items-center gap-2 pt-2 border-t text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3" />
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="bg-transparent border-none text-xs cursor-pointer focus:outline-none"
-                >
-                  {cities.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-            </nav>
-          </div>
-        )}
+                {designCategories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/design-ideas/${cat.slug}`}
+                    className="text-sm py-2 pl-6 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+                <div className="flex items-center gap-2 pt-3 mt-2 border-t border-border text-xs text-muted-foreground">
+                  <MapPin className="h-3 w-3" />
+                  <select
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    className="bg-transparent border-none text-xs cursor-pointer focus:outline-none"
+                  >
+                    {cities.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
     </>
   );
