@@ -226,10 +226,10 @@ export default function AdminCatalogues() {
               </div>
               <div>
                 <Label>Tag / Badge</Label>
-                <Select value={form.tag} onValueChange={(v) => setForm({ ...form, tag: v })}>
+                <Select value={form.tag || "none"} onValueChange={(v) => setForm({ ...form, tag: v === "none" ? "" : v })}>
                   <SelectTrigger><SelectValue placeholder="None" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {tags.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                   </SelectContent>
                 </Select>
