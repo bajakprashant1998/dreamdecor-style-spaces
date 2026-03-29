@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Upload, FileText, Image as ImageIcon, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, FileText, Image as ImageIcon, ExternalLink, Settings2, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface Catalogue {
@@ -29,22 +29,38 @@ interface Catalogue {
   created_at: string;
 }
 
-const categories = ["Living Room", "Bedroom", "Office", "Kitchen"];
+interface CatalogueCategory {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
 const tags = ["New", "Trending", "Popular"];
 
 export default function AdminCatalogues() {
   const [items, setItems] = useState<Catalogue[]>([]);
+  const [categories, setCategories] = useState<CatalogueCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [catDialogOpen, setCatDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Catalogue | null>(null);
   const [uploading, setUploading] = useState<{ pdf: boolean; image: boolean }>({ pdf: false, image: false });
+  const [newCatName, setNewCatName] = useState("");
 
   const empty = {
-    title: "", slug: "", category: "Living Room", description: "",
+    title: "", slug: "", category: "", description: "",
     thumbnail_url: "", pdf_url: "", file_size: "100 MB", tag: "",
     is_published: true, sort_order: 0, meta_title: "", meta_description: "",
   };
   const [form, setForm] = useState(empty);
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from("catalogue_categories")
+      .select("*")
+      .order("sort_order");
+    if (data) setCategories(data as any);
+  };
 
   const fetchItems = async () => {
     const { data } = await supabase
@@ -55,14 +71,17 @@ export default function AdminCatalogues() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => {
+    fetchCategories();
+    fetchItems();
+  }, []);
 
   const generateSlug = (title: string) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   const openNew = () => {
     setEditing(null);
-    setForm(empty);
+    setForm({ ...empty, category: categories[0]?.name || "" });
     setDialogOpen(true);
   };
 
@@ -97,7 +116,6 @@ export default function AdminCatalogues() {
     }
     const { data: urlData } = supabase.storage.from("media").getPublicUrl(path);
     if (type === "pdf") {
-      // Calculate file size
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
       setForm((prev) => ({ ...prev, pdf_url: urlData.publicUrl, file_size: `${sizeMB} MB` }));
     } else {
@@ -132,6 +150,33 @@ export default function AdminCatalogues() {
     fetchItems();
   };
 
+  const addCategory = async () => {
+    if (!newCatName.trim()) return;
+    const { error } = await supabase.from("catalogue_categories").insert({
+      name: newCatName.trim(),
+      sort_order: categories.length,
+    } as any);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Category added");
+    setNewCatName("");
+    fetchCategories();
+  };
+
+  const deleteCategory = async (id: string, name: string) => {
+    const used = items.some((i) => i.category === name);
+    if (used) {
+      toast.error("Cannot delete — category is in use by catalogues");
+      return;
+    }
+    if (!confirm(`Delete category "${name}"?`)) return;
+    await supabase.from("catalogue_categories").delete().eq("id", id);
+    toast.success("Category deleted");
+    fetchCategories();
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -139,9 +184,14 @@ export default function AdminCatalogues() {
           <h1 className="text-2xl font-bold">Catalogues</h1>
           <p className="text-sm text-muted-foreground">Manage PDF catalogues for download</p>
         </div>
-        <Button onClick={openNew} className="gap-2">
-          <Plus className="h-4 w-4" /> Add Catalogue
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setCatDialogOpen(true)} className="gap-2">
+            <Settings2 className="h-4 w-4" /> Categories
+          </Button>
+          <Button onClick={openNew} className="gap-2">
+            <Plus className="h-4 w-4" /> Add Catalogue
+          </Button>
+        </div>
       </div>
 
       {loading ? (
@@ -190,6 +240,7 @@ export default function AdminCatalogues() {
         </div>
       )}
 
+      {/* Catalogue Form Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
@@ -197,7 +248,6 @@ export default function AdminCatalogues() {
           </DialogHeader>
 
           <div className="space-y-5 mt-4">
-            {/* Title & Slug */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Title *</Label>
@@ -213,16 +263,19 @@ export default function AdminCatalogues() {
               </div>
             </div>
 
-            {/* Category & Tag */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label>Category</Label>
-                <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                {categories.length > 0 ? (
+                  <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
+                    <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                    <SelectContent>
+                      {categories.map((c) => <SelectItem key={c.id} value={c.name}>{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-1">No categories. Add one first.</p>
+                )}
               </div>
               <div>
                 <Label>Tag / Badge</Label>
@@ -240,7 +293,6 @@ export default function AdminCatalogues() {
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <Label>Description</Label>
               <Textarea
@@ -251,7 +303,6 @@ export default function AdminCatalogues() {
               />
             </div>
 
-            {/* Thumbnail Upload */}
             <div>
               <Label className="mb-2 block">Thumbnail Image</Label>
               {form.thumbnail_url && (
@@ -264,19 +315,10 @@ export default function AdminCatalogues() {
                     {uploading.image ? "Uploading..." : "Upload Image"}
                   </span>
                 </Button>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) uploadFile(f, "image");
-                  }}
-                />
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f, "image"); }} />
               </label>
             </div>
 
-            {/* PDF Upload */}
             <div>
               <Label className="mb-2 block">PDF File</Label>
               {form.pdf_url && (
@@ -291,20 +333,11 @@ export default function AdminCatalogues() {
                     {uploading.pdf ? "Uploading..." : "Upload PDF"}
                   </span>
                 </Button>
-                <input
-                  type="file"
-                  accept=".pdf,application/pdf"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) uploadFile(f, "pdf");
-                  }}
-                />
+                <input type="file" accept=".pdf,application/pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f, "pdf"); }} />
               </label>
               <p className="text-xs text-muted-foreground mt-1">Max 100MB PDF files supported</p>
             </div>
 
-            {/* SEO */}
             <div className="border-t pt-4">
               <h4 className="text-sm font-semibold mb-3">SEO Settings</h4>
               <div className="space-y-3">
@@ -319,7 +352,6 @@ export default function AdminCatalogues() {
               </div>
             </div>
 
-            {/* Published */}
             <div className="flex items-center gap-3">
               <Switch checked={form.is_published} onCheckedChange={(v) => setForm({ ...form, is_published: v })} />
               <Label>Published</Label>
@@ -329,6 +361,47 @@ export default function AdminCatalogues() {
               <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
               <Button onClick={handleSave}>{editing ? "Update" : "Create"}</Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Category Management Dialog */}
+      <Dialog open={catDialogOpen} onOpenChange={setCatDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Manage Categories</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div className="flex gap-2">
+              <Input
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                placeholder="New category name"
+                onKeyDown={(e) => e.key === "Enter" && addCategory()}
+              />
+              <Button onClick={addCategory} size="sm" className="shrink-0 gap-1">
+                <Plus className="h-4 w-4" /> Add
+              </Button>
+            </div>
+            {categories.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">No categories yet</p>
+            ) : (
+              <div className="space-y-2">
+                {categories.map((cat) => (
+                  <div key={cat.id} className="flex items-center justify-between bg-muted/50 rounded-md px-3 py-2">
+                    <span className="text-sm font-medium">{cat.name}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7"
+                      onClick={() => deleteCategory(cat.id, cat.name)}
+                    >
+                      <X className="h-3.5 w-3.5 text-destructive" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
