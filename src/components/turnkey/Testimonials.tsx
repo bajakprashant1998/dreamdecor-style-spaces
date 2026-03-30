@@ -1,6 +1,6 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 const testimonials = [
   {
@@ -28,39 +28,50 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 md:py-28 bg-card">
       <div className="container px-4 md:px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14 max-w-2xl mx-auto"
+        >
+          <span className="inline-block text-sm font-semibold text-primary uppercase tracking-widest mb-3">Testimonials</span>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl font-display">
             Trusted By Gujarat's Best
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-4 text-lg text-muted-foreground">
             From Reliance to Indian Navy — our work speaks for itself
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           {testimonials.map((t, i) => (
-            <Card key={i} className="border-none shadow-lg bg-gray-50/50">
-              <CardContent className="pt-8 px-8 pb-8 relative">
-                <Quote className="absolute top-6 right-6 h-8 w-8 text-primary/10 rotate-180" />
-                <div className="flex gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="relative rounded-2xl border border-border bg-background p-6 sm:p-8 shadow-sm hover:shadow-lg transition-all duration-300"
+            >
+              <Quote className="absolute top-6 right-6 h-10 w-10 text-primary/10 rotate-180" />
+              <div className="flex gap-1 mb-5">
+                {[...Array(t.rating)].map((_, j) => (
+                  <Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-foreground/80 italic leading-relaxed mb-6">"{t.content}"</p>
+              <div className="flex items-center gap-4 pt-4 border-t border-border">
+                <div className="h-11 w-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm flex-shrink-0">
+                  {t.avatar}
                 </div>
-                <p className="text-gray-700 italic mb-6">"{t.content}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{t.name}</h4>
-                    <p className="text-sm text-gray-500">{t.project}</p>
-                  </div>
+                <div>
+                  <h4 className="font-bold text-foreground">{t.name}</h4>
+                  <p className="text-xs text-muted-foreground">{t.project}</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
