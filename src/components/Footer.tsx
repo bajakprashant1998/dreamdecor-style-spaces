@@ -1,93 +1,140 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import logo from "@/assets/logo.webp";
+
+const quickLinks = [
+  { label: "Shop All", path: "/shop" },
+  { label: "Design Ideas", path: "/design-ideas" },
+  { label: "Turnkey Projects", path: "/turnkey-projects" },
+  { label: "Catalogues", path: "/catalogue" },
+  { label: "Blog", path: "/blog" },
+  { label: "About Us", path: "/about" },
+];
+
+const careLinks = [
+  { label: "Contact Us", path: "/contact" },
+  { label: "Shipping Policy", path: "#" },
+  { label: "Return Policy", path: "#" },
+  { label: "Privacy Policy", path: "#" },
+  { label: "Terms & Conditions", path: "#" },
+];
+
+const socials = [
+  { icon: Facebook, href: "#", label: "Facebook" },
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Twitter, href: "#", label: "Twitter" },
+  { icon: Youtube, href: "#", label: "Youtube" },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-foreground text-background/80">
-      <div className="container py-10 md:py-16 px-6">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="Dream Decor" className="h-10 md:h-12 w-auto brightness-200" />
-              <div>
-                <span className="font-display text-base md:text-lg font-bold text-background block">Dream Decor</span>
-                <span className="text-[9px] md:text-[10px] tracking-widest uppercase text-background/60">Furniture</span>
-              </div>
-            </div>
-            <p className="text-xs md:text-sm leading-relaxed text-background/60 mb-4">
-              Crafting premium furniture for modern Indian homes since 2010. Quality, comfort & elegance in every piece.
+    <footer className="bg-foreground text-background/80 relative overflow-hidden">
+      {/* Subtle radial glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="container relative z-10 py-14 md:py-20 px-6">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10">
+
+          {/* Brand Column */}
+          <div className="col-span-2 lg:col-span-4">
+            <Link to="/" className="inline-flex items-center gap-3 mb-5 group">
+              <img src={logo} alt="Dream Decor" className="h-11 md:h-14 w-auto brightness-200 group-hover:scale-105 transition-transform" />
+            </Link>
+            <p className="text-sm leading-relaxed text-background/50 mb-6 max-w-xs">
+              Crafting premium interiors & furniture for modern Indian homes since 2010. Quality, comfort & elegance in every piece.
             </p>
-            <div className="flex gap-2.5 md:gap-3">
-              {[Facebook, Instagram, Twitter, Youtube].map((Icon, i) => (
+            <div className="flex gap-2.5">
+              {socials.map((s, i) => (
                 <a
                   key={i}
-                  href="#"
-                  className="h-8 w-8 md:h-9 md:w-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                  href={s.href}
+                  aria-label={s.label}
+                  className="h-9 w-9 rounded-xl bg-background/8 border border-background/10 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300 hover:scale-110"
                 >
-                  <Icon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  <s.icon className="h-4 w-4" />
                 </a>
               ))}
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="font-display text-sm md:text-base font-semibold text-background mb-3 md:mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-xs md:text-sm">
-              {[
-                { label: "Shop All", path: "/shop" },
-                { label: "Design Ideas", path: "/design-ideas" },
-                { label: "Turnkey Projects", path: "/turnkey-projects" },
-                { label: "Blog", path: "/blog" },
-                { label: "About Us", path: "/about" },
-                { label: "Contact", path: "/contact" },
-              ].map((l) => (
+          <div className="col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-4 md:mb-5">Explore</h4>
+            <ul className="space-y-2.5">
+              {quickLinks.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.path} className="hover:text-primary transition-colors">{l.label}</Link>
+                  <Link
+                    to={l.path}
+                    className="text-sm text-background/50 hover:text-primary hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1 group"
+                  >
+                    <ArrowRight className="h-3 w-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                    {l.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Policies */}
-          <div>
-            <h4 className="font-display text-sm md:text-base font-semibold text-background mb-3 md:mb-4">Customer Care</h4>
-            <ul className="space-y-2 text-xs md:text-sm">
-              {["About Us", "Contact Us", "Shipping Policy", "Return Policy", "Privacy Policy", "Terms & Conditions"].map((l) => (
-                <li key={l}>
-                  <Link to="#" className="hover:text-primary transition-colors">{l}</Link>
+          {/* Customer Care */}
+          <div className="col-span-1 lg:col-span-2">
+            <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-4 md:mb-5">Support</h4>
+            <ul className="space-y-2.5">
+              {careLinks.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    to={l.path}
+                    className="text-sm text-background/50 hover:text-primary hover:translate-x-1 transition-all duration-200 inline-flex items-center gap-1 group"
+                  >
+                    <ArrowRight className="h-3 w-3 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
+                    {l.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Contact */}
-          <div className="col-span-2 md:col-span-1">
-            <h4 className="font-display text-sm md:text-base font-semibold text-background mb-3 md:mb-4">Contact Us</h4>
-            <ul className="space-y-2.5 md:space-y-3 text-xs md:text-sm">
-              <li className="flex gap-2.5 md:gap-3">
-                <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0 mt-0.5 text-primary" />
-                <span>Above Chandra Motors, Opp. Townhall, Jamnagar</span>
+          <div className="col-span-2 lg:col-span-4">
+            <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-4 md:mb-5">Get In Touch</h4>
+            <ul className="space-y-4 text-sm">
+              <li className="flex gap-3 items-start">
+                <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center mt-0.5">
+                  <MapPin className="h-4 w-4 text-primary" />
+                </div>
+                <span className="text-background/50">Above Chandra Motors, Opp. Town Hall, Jamnagar</span>
               </li>
-              <li className="flex gap-2.5 md:gap-3">
-                <Phone className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0 text-primary" />
-                <a href="tel:02882661287" className="hover:text-primary transition-colors">0288 - 2661287 / 87582 99988</a>
+              <li className="flex gap-3 items-center">
+                <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Phone className="h-4 w-4 text-primary" />
+                </div>
+                <a href="tel:02882661287" className="text-background/50 hover:text-primary transition-colors">
+                  0288 - 2661287 / 87582 99988
+                </a>
               </li>
-              <li className="flex gap-2.5 md:gap-3">
-                <Mail className="h-3.5 w-3.5 md:h-4 md:w-4 shrink-0 text-primary" />
-                <a href="mailto:dream_decor@rediffmail.com" className="hover:text-primary transition-colors break-all">dream_decor@rediffmail.com</a>
+              <li className="flex gap-3 items-center">
+                <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Mail className="h-4 w-4 text-primary" />
+                </div>
+                <a href="mailto:dream_decor@rediffmail.com" className="text-background/50 hover:text-primary transition-colors break-all">
+                  dream_decor@rediffmail.com
+                </a>
               </li>
             </ul>
-            <div className="mt-3 md:mt-4 text-[10px] md:text-xs text-background/40">
-              <p>Serving: Jamnagar • Porbandar • Bhavnagar • Surat</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {["Jamnagar", "Porbandar", "Bhavnagar", "Surat"].map((city) => (
+                <span key={city} className="text-[11px] px-2.5 py-1 rounded-full bg-background/5 border border-background/10 text-background/40">
+                  {city}
+                </span>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="border-t border-background/10 mt-8 md:mt-10 pt-5 md:pt-6 text-center text-[10px] md:text-xs text-background/40">
-          <p>© {new Date().getFullYear()} Dream Decor Furniture. All rights reserved.</p>
+        {/* Bottom bar */}
+        <div className="border-t border-background/8 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[11px] text-background/30">
+          <p>© {new Date().getFullYear()} Dream Decor. All rights reserved.</p>
+          <p>Designed with passion in Gujarat, India</p>
         </div>
       </div>
     </footer>
